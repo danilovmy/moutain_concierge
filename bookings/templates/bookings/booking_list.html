@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Брони{% endblock %}
+{% block content %}
+<h1>Брони</h1>
+
+<form method="get" class="inline">
+  <label>Статус:
+    <select name="status">
+      <option value="">—</option>
+      {% for val, label in view.model.Status.choices %}
+        <option value="{{ val }}" {% if request.GET.status == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>С:
+    <input type="date" name="date_from" value="{{ request.GET.date_from }}" />
+  </label>
+  <label>По:
+    <input type="date" name="date_to" value="{{ request.GET.date_to }}" />
+  </label>
+  <button type="submit">Фильтр</button>
+  <a href="{% url 'bookings:list' %}">Сброс</a>
+  <span style="float:right"><a href="{% url 'bookings:create' %}">Новая бронь</a></span>
+  </form>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Лид</th>
+      <th>Гость</th>
+      <th>Даты услуги</th>
+      <th>Статус</th>
+      <th>Сумма</th>
+      <th>Комиссия</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for obj in object_list %}
+      <tr>
+        <td>{{ obj.pk }}</td>
+        <td><a href="{% url 'leads:detail' obj.lead_id %}">Лид #{{ obj.lead_id }}</a></td>
+        <td>{{ obj.guest_name }}</td>
+        <td>{% if obj.date_from %}{{ obj.date_from }}{% endif %}{% if obj.date_to %}–{{ obj.date_to }}{% endif %}</td>
+        <td>{{ obj.get_status_display }}</td>
+        <td>{{ obj.total_guest_price }}</td>
+        <td>{{ obj.total_commission }}</td>
+        <td class="actions">
+          <a href="{% url 'bookings:detail' obj.pk %}">Открыть</a>
+          <a href="{% url 'bookings:edit' obj.pk %}">Изменить</a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="8">Нет данных</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+

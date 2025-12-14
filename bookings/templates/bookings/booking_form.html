@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Бронь{% endblock %}
+{% block content %}
+<h1>Бронь</h1>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <h3>Услуги</h3>
+  {{ items_formset.management_form }}
+  <table>
+    <thead>
+      <tr>
+        {% for form in items_formset.forms|slice:":1" %}
+          {% for field in form.visible_fields %}
+            <th>{{ field.label }}</th>
+          {% endfor %}
+          <th>Удалить</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for form in items_formset.forms %}
+        <tr>
+          {% for field in form.visible_fields %}
+            <td>{{ field }}</td>
+          {% endfor %}
+          <td>{% if form.instance.pk %}{{ form.DELETE }}{% endif %}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button type="submit">Сохранить</button>
+  <a href="{% url 'bookings:list' %}">Отмена</a>
+</form>
+{% endblock %}
+

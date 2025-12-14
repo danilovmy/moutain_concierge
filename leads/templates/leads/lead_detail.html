@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Лид #{{ object.pk }}{% endblock %}
+{% block content %}
+<h1>Лид #{{ object.pk }}</h1>
+
+<p><b>Гость:</b> {{ object.guest_name }}</p>
+<p><b>Контакты:</b> {{ object.contact }}</p>
+<p><b>Источник:</b> {{ object.get_source_type_display }} {% if object.source_text %}({{ object.source_text }}){% endif %}</p>
+<p><b>Нужно:</b> {% for n in object.needs %}{{ n }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</p>
+<p><b>Даты поездки:</b> {% if object.date_from %}{{ object.date_from }}{% endif %}{% if object.date_to %}–{{ object.date_to }}{% endif %}</p>
+<p><b>Статус:</b> {{ object.get_status_display }}</p>
+<p><b>Комментарий:</b><br/>{{ object.comment|default:"—" }}</p>
+
+<p class="actions">
+  <a href="{% url 'leads:edit' object.pk %}">Изменить</a>
+  <a href="{% url 'bookings:create' %}?lead={{ object.pk }}">Создать бронь</a>
+  <a href="{% url 'leads:list' %}">К списку</a>
+ </p>
+
+{% if object.bookings.all %}
+  <h2>Брони</h2>
+  <ul>
+    {% for b in object.bookings.all %}
+      <li><a href="{% url 'bookings:detail' b.pk %}">Бронь #{{ b.pk }}</a> — {{ b.get_status_display }} — {{ b.date_from }}{% if b.date_to %}–{{ b.date_to }}{% endif %}</li>
+    {% empty %}
+      <li>Нет броней</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+{% endblock %}
+

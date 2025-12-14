@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Лиды{% endblock %}
+{% block content %}
+<h1>Лиды</h1>
+
+<form method="get" class="inline">
+  <label>Статус:
+    <select name="status">
+      <option value="">—</option>
+      {% for val, label in view.model.Status.choices %}
+        <option value="{{ val }}" {% if request.GET.status == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Источник:
+    <select name="source">
+      <option value="">—</option>
+      {% for val, label in view.model.SourceType.choices %}
+        <option value="{{ val }}" {% if request.GET.source == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Дата создания:
+    <input type="date" name="date" value="{{ request.GET.date }}" />
+  </label>
+  <button type="submit">Фильтр</button>
+  <a href="{% url 'leads:list' %}">Сброс</a>
+  <span style="float:right"><a href="{% url 'leads:create' %}">Новый лид</a></span>
+  </form>
+
+<table>
+  <thead>
+    <tr>
+      <th>Дата</th>
+      <th>Гость</th>
+      <th>Контакты</th>
+      <th>Источник</th>
+      <th>Нужно</th>
+      <th>Период</th>
+      <th>Статус</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for obj in object_list %}
+      <tr>
+        <td>{{ obj.created_at|date:'d.m' }}</td>
+        <td>{{ obj.guest_name }}</td>
+        <td>{{ obj.contact }}</td>
+        <td>{{ obj.get_source_type_display }} {% if obj.source_text %}({{ obj.source_text }}){% endif %}</td>
+        <td>{% for n in obj.needs %}<span>{{ n }}</span>{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+        <td>{% if obj.date_from %}{{ obj.date_from }}{% endif %}{% if obj.date_to %}–{{ obj.date_to }}{% endif %}</td>
+        <td>{{ obj.get_status_display }}</td>
+        <td class="actions">
+          <a href="{% url 'leads:detail' obj.pk %}">Открыть</a>
+          <a href="{% url 'leads:edit' obj.pk %}">Изменить</a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="8">Нет данных</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+

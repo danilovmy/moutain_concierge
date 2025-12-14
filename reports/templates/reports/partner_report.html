@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Отчёт по партнёру{% endblock %}
+{% block content %}
+<h1>Отчёт по партнёру</h1>
+
+<form method="get" class="inline">
+  <label>Партнёр:
+    <select name="partner">
+      <option value="">—</option>
+      {% for p in partners %}
+        <option value="{{ p.pk }}" {% if selected_partner == p.pk %}selected{% endif %}>{{ p.name }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>С: <input type="date" name="date_from" value="{{ date_from }}" /></label>
+  <label>По: <input type="date" name="date_to" value="{{ date_to }}" /></label>
+  <button type="submit">Показать</button>
+  <a href="{% url 'reports:partner_report' %}">Сброс</a>
+  </form>
+
+<table>
+  <thead>
+    <tr>
+      <th>Бронь</th>
+      <th>Даты услуги</th>
+      <th>Гость</th>
+      <th>Тип услуги</th>
+      <th>Описание</th>
+      <th>Цена гостю</th>
+      <th>Комиссия</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for it in items %}
+      <tr>
+        <td><a href="{% url 'bookings:detail' it.booking_id %}">#{{ it.booking_id }}</a></td>
+        <td>{{ it.booking.date_from }}{% if it.booking.date_to %}–{{ it.booking.date_to }}{% endif %}</td>
+        <td>{{ it.booking.guest_name }}</td>
+        <td>{{ it.get_service_type_display }}</td>
+        <td>{{ it.description }}</td>
+        <td>{{ it.guest_price }}</td>
+        <td>{{ it.commission }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="7">Нет данных</td></tr>
+    {% endfor %}
+  </tbody>
+  <tfoot>
+    <tr>
+      <th colspan="5">Итого</th>
+      <th>{{ totals.total_turnover|default:0 }}</th>
+      <th>{{ totals.total_commission|default:0 }}</th>
+    </tr>
+  </tfoot>
+</table>
+{% endblock %}
+

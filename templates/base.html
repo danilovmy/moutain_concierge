@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Консьерж{% endblock %}</title>
+    <style>
+      body { font-family: system-ui, Arial, sans-serif; margin: 0; }
+      header, footer { background: #1f2937; color: #fff; padding: 12px 16px; }
+      a { color: #2563eb; text-decoration: none; }
+      nav a { color: #fff; margin-right: 12px; }
+      main { padding: 16px; }
+      table { border-collapse: collapse; width: 100%; }
+      th, td { border: 1px solid #e5e7eb; padding: 6px 8px; text-align: left; }
+      th { background: #f3f4f6; }
+      .actions { display: inline-flex; gap: 8px; }
+      form.inline>* { margin-right: 8px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/">Главная</a>
+        <a href="{% url 'partners:list' %}">Партнёры</a>
+        <a href="{% url 'leads:list' %}">Лиды</a>
+        <a href="{% url 'bookings:list' %}">Брони</a>
+        <a href="{% url 'reports:partner_report' %}">Отчёты</a>
+        <span style="float:right;">
+          {% if user.is_authenticated %}
+            {{ user.username }} · <a href="{% url 'logout' %}">Выход</a>
+          {% else %}
+            <a href="{% url 'login' %}">Вход</a>
+          {% endif %}
+        </span>
+      </nav>
+    </header>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+    <footer>
+      <small>© Консьерж</small>
+    </footer>
+  </body>
+  </html>
+

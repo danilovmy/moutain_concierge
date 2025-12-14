@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Лид{% endblock %}
+{% block content %}
+<h1>Лид</h1>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Сохранить</button>
+  <a href="{% url 'leads:list' %}">Отмена</a>
+{% if object and object.pk %}
+  <a href="{% url 'bookings:create' %}?lead={{ object.pk }}" style="margin-left:12px;">Создать бронь</a>
+{% endif %}
+</form>
+{% endblock %}
+

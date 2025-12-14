@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+<h1>Горный Консьерж</h1>
+<p>Быстрые ссылки:</p>
+<ul>
+  <li><a href="{% url 'partners:list' %}">Партнёры</a></li>
+  <li><a href="{% url 'leads:list' %}">Лиды</a></li>
+  <li><a href="{% url 'bookings:list' %}">Брони</a></li>
+  <li><a href="{% url 'reports:partner_report' %}">Отчёт по партнёру</a></li>
+  <li><a href="{% url 'admin:index' %}">Админка</a></li>
+{% if user.is_authenticated %}
+  <li><a href="{% url 'logout' %}">Выйти</a></li>
+{% else %}
+  <li><a href="{% url 'login' %}">Войти</a></li>
+{% endif %}
+  </ul>
+{% endblock %}
