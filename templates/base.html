@@ -5,41 +5,114 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Консьерж{% endblock %}</title>
     <style>
-      body { font-family: system-ui, Arial, sans-serif; margin: 0; }
-      header, footer { background: #1f2937; color: #fff; padding: 12px 16px; }
-      a { color: #2563eb; text-decoration: none; }
-      nav a { color: #fff; margin-right: 12px; }
-      main { padding: 16px; }
-      table { border-collapse: collapse; width: 100%; }
-      th, td { border: 1px solid #e5e7eb; padding: 6px 8px; text-align: left; }
-      th { background: #f3f4f6; }
+      :root {
+        --primary: #0ea5e9;
+        --primary-600: #0284c7;
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --text: #0f172a;
+        --muted: #64748b;
+        --border: #e5e7eb;
+        --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.1);
+      }
+
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        color: var(--text);
+        background: var(--bg);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", "Apple Color Emoji", "Segoe UI Emoji";
+        line-height: 1.5;
+      }
+
+      a { color: var(--primary); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .container { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+
+      header { background: linear-gradient(90deg, #0ea5e9, #2563eb); color: #fff; position: sticky; top: 0; z-index: 10; }
+      header .nav { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+      header .nav a { color: #fff; opacity: .95; margin-right: 16px; font-weight: 500; }
+      header .nav a:hover { opacity: 1; text-decoration: none; }
+      .brand { display: inline-flex; gap: 10px; align-items: center; font-weight: 800; letter-spacing: .2px; }
+      .brand .dot { width: 10px; height: 10px; border-radius: 999px; background: #fff; opacity: .9; }
+      .nav-right { display: inline-flex; gap: 12px; align-items: center; }
+      .nav-links { display: inline-flex; align-items: center; }
+
+      main { padding: 24px 0 48px; }
+
+      footer { background: #0f172a; color: #cbd5e1; }
+      footer .container { padding: 14px 16px; }
+
+      h1 { margin: 0 0 16px; font-size: 28px; }
+      h2 { margin: 16px 0 8px; font-size: 22px; }
+      p { margin: 0 0 12px; color: var(--text); }
+
+      .btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border);
+        background: var(--surface); color: var(--text); box-shadow: var(--shadow); font-weight: 600;
+        transition: transform .12s ease, box-shadow .12s ease;
+      }
+      .btn:hover { transform: translateY(-1px); }
+      .btn-primary { background: var(--primary); border-color: transparent; color: #fff; }
+      .btn-primary:hover { background: var(--primary-600); }
+
+      .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); padding: 16px; }
+      .card-link { display: block; padding: 16px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); transition: transform .12s ease, box-shadow .12s ease; font-weight: 600; color: var(--text); }
+      .card-link:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16,24,40,0.12); text-decoration: none; }
+      .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); list-style: none; padding: 0; }
+
+      table { border-collapse: collapse; width: 100%; background: var(--surface); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+      th, td { border-bottom: 1px solid var(--border); padding: 10px 12px; text-align: left; }
+      th { background: #f1f5f9; }
       .actions { display: inline-flex; gap: 8px; }
-      form.inline>* { margin-right: 8px; }
+      form.inline > * { margin-right: 8px; }
+
+      form { max-width: 420px; }
+      form p { margin: 0 0 12px 0; }
+      label { display: block; font-size: 14px; color: var(--muted); margin-bottom: 6px; }
+      input[type=text], input[type=password], input[type=email], input[type=number], input[type=date], input[type=search], select, textarea {
+        width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); outline: none;
+      }
+      input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(14,165,233,.2); }
+      .form-actions { margin-top: 16px; display: flex; gap: 8px; }
+
+      .auth-wrap { display: grid; justify-content: center; padding-top: 24px; }
+      .auth-card { width: 100%; max-width: 420px; }
+      .muted { color: var(--muted); }
     </style>
   </head>
   <body>
     <header>
-      <nav>
-        <a href="/">Главная</a>
-        <a href="{% url 'partners:list' %}">Партнёры</a>
-        <a href="{% url 'leads:list' %}">Лиды</a>
-        <a href="{% url 'bookings:list' %}">Брони</a>
-        <a href="{% url 'reports:partner_report' %}">Отчёты</a>
-        <span style="float:right;">
+      <div class="container nav">
+        <a href="/" class="brand"><span class="dot"></span>Горный Консьерж</a>
+        <div class="nav-links">
+          <a href="/">Главная</a>
+          <a href="{% url 'partners:list' %}">Партнёры</a>
+          <a href="{% url 'leads:list' %}">Лиды</a>
+          <a href="{% url 'bookings:list' %}">Брони</a>
+          <a href="{% url 'reports:partner_report' %}">Отчёты</a>
+        </div>
+        <div class="nav-right">
           {% if user.is_authenticated %}
-            {{ user.username }} · <a href="{% url 'logout' %}">Выход</a>
+            <span class="muted">{{ user.username }}</span>
+            <a class="btn btn-primary" href="{% url 'logout' %}">Выход</a>
           {% else %}
-            <a href="{% url 'login' %}">Вход</a>
+            <a class="btn btn-primary" href="{% url 'login' %}">Вход</a>
           {% endif %}
-        </span>
-      </nav>
+        </div>
+      </div>
     </header>
     <main>
-      {% block content %}{% endblock %}
+      <div class="container">
+        {% block content %}{% endblock %}
+      </div>
     </main>
     <footer>
-      <small>© Консьерж</small>
+      <div class="container">
+        <small>© Консьерж</small>
+      </div>
     </footer>
   </body>
   </html>
-
